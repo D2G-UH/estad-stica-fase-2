@@ -1,0 +1,629 @@
+\documentclass[12pt]{article}
+
+%Packages
+\usepackage[latin1]{inputenc}
+% Esto es para que el LaTeX sepa que el texto estÃ¡ en espaÃ±ol:
+\usepackage[spanish]{babel}
+\usepackage[x11names,table]{xcolor}
+
+% Paquetes de la AMS:
+%\usepackage[total={6in,11in},top=0.50in, left=1in]{geometry}
+\usepackage[top=1in, left=1in, right=1in, bottom=1in]{geometry}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphics}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{latexsym}
+\usepackage{newlfont}
+\usepackage{epstopdf}
+\usepackage{amsthm}
+\usepackage{epsfig}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage[colorlinks]{hyperref}
+\usepackage[x11names,table]{xcolor}
+\usepackage{graphics}
+\usepackage{wrapfig}
+\usepackage[rflt]{floatflt}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{array}
+
+\lstset{ %
+	language=R, % lenguaje
+	basicstyle=\normalsize\ttfamily,
+	keywordstyle=\color{blue},
+	commentstyle=\color{blue!50},
+	backgroundcolor=\color{gray!9},
+	identifierstyle = \color{gray!161},
+	stringstyle = \color{yellow},
+	numberstyle = \color{green},
+	columns=fullflexible,
+	showspaces=false
+}
+
+
+
+\newtheorem{thm}{Teorema}[section]
+\newtheorem{cor}[thm]{Corolario}
+\newtheorem{lem}[thm]{Lema}
+\newtheorem{prop}[thm]{ProposiciÃ³n}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definicion}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{ObservaciÃ³n}
+
+\def\RR{\mathbb{R}}
+
+\renewcommand{\labelenumi}{$\bullet$}
+\newtheorem{definition}{Definición}[section]
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corolario}[section]
+\newtheorem{lemma}{Lema}[section]
+\newtheorem{proposition}{Proposición}[section]
+\newcommand{\statement}[3]{
+	\begin{center}
+		{ \fcolorbox {gray!11}{gray!11}{
+				\begin{minipage}[h!]{\textwidth}
+					\begin{#1}\label{#3}
+						#2
+					\end{#1}
+				\end{minipage} } }
+			\end{center}}
+			\renewcommand{\proof}[1]{{\it Demostración}\\ #1 \hfill\blacksquare}
+\newcommand{\pagediv}[4]
+{
+	\begin{figure}[!h]
+		\begin{minipage}[b]{#1\textwidth}
+			#3			
+		\end{minipage} \hfill 
+		\begin{minipage}[b]{#2\textwidth}
+			#4
+		\end{minipage}
+	\end{figure}
+	
+}
+
+
+
+%define title
+\author{
+	Equipo 1\\
+	Dalianys P\'erez Perera\\
+	Dayany Alfaro González\\
+	Gilberto González Rodríguez\\
+	Grupo C-411 \\
+}
+\title{Clase Práctica 6   \\
+	Regresión Lineal Simple
+	}
+
+\date{}
+\begin{document}
+%generates the title
+\maketitle
+
+\selectlanguage{spanish}
+
+\newpage
+%insert table contents
+\tableofcontents
+\newpage
+
+\section {Introducción}
+La regresión lineal simple consiste en generar un modelo de regresión(ecuación de la recta) que permita explicar la  relación lineal que existe entre dos variables. Una recta de regresión puede emplearse para diferentes propósitos y dependiendo de ellos es necesario satisfacer distintas condiciones.
+
+ En caso de querer medir la relación entre dos variables, la recta de regresión lo va a indicar de forma directa. Sin embargo, en caso de querer predecir el valor de una variable en función de la otra, no solo se necesita calcular la recta, sino que además hay que asegurar que el modelo sea bueno. Es importante tener en cuenta que que las predicciones deben, a priori, limitarse al rango de valores dentro del que se encuentran las observaciones con las que se ha generado el modelo. Esto es importante puesto que se solo en esta región se tiene certeza de que se cumplen las condiciones para que el modelo sea válido.
+ 
+ En el presente trabajo se analizan tres diferentes casos para determinar la relación existente entre sus variables, además de la estimación de valores a partir del modelo obtenido y la comprobación de los supuestos para dicho modelo. 
+ 
+ \newpage
+
+\section {Ejercicio 1}
+Ajuste los siguientes datos a una recta por mínimos cuadrados:
+
+\begin{table}[h]
+	\centering
+	\scalebox{0.8}
+	{\fontfamily{ptm}\selectfont{
+			\rowcolors{1}{}{red!10}
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				$x$    & -1 & 0 & 3 & 7  \\
+				\hline
+				$f(x)$    & 2 & 0 & 4 & 7\\
+			
+				\hline
+	\end{tabular} }}
+	\caption{Datos iniciales}
+\end{table}
+
+	
+	{\bf Test de correlación de Pearson: }
+	
+	$r = 0.924037$
+	
+	intervalo de confianza($95\%$)  $[-0.33104226, \quad 0.9984344 ]$
+	
+	$p-valor : 0.07596$
+	
+
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/dispersion1.png}
+		\caption{\small{Diagrama de dispersión }}
+	\end{figure}
+
+El primer paso antes de generar un modelo de regresión lineal es representar los datos para poder intuir si existe una relación y cuantificar dicha relación mediante un coeficiente de correlación. La figura 1 y el test de correlación muestran una relación lineal de intensidad considerable( $r = 0.924037$) y significancia($p-valor : 0.07596$).\\
+
+
+{\bf Ecuación del modelo:  }$y =  1.5226 x + 0.7677$\\
+
+
+{\bf Estimación}
+
+Para estimar el valor de $x = 1$ se utilizó la función predict de R y se obtuvo:
+
+$f(1) = 2.290323$ 
+
+intervalo de confianza($95\% )  \quad [-0.951074,  \quad 5.531719]$ 
+
+
+\newpage
+
+
+\subsection{Diagnóstico del modelo}
+
+
+\begin{itemize}
+	\item  
+	{
+		{\bf Linealidad de los errores .}
+		Para analizar este supuesto se aplicó la prueba  Durbin-Watson obteniendo como resultado:
+		
+		\begin{center}
+			$DW = 2.697$
+			
+			$p-valor = 0.5136$
+			
+			$\alpha = 0.05$
+		\end{center}
+		
+		Interpretación: Como $p-valor > \alpha$   no se puede rechazar $H_0$ por lo que se puede decir que los errores son independientes.
+		
+		
+	}
+
+	\item 
+	{
+		{\bf Valor esperado del error aleatorio  igual a cero.}
+		
+		\begin{table}[!h]
+			\centering
+			\scalebox{0.8}
+			{\fontfamily{ptm}\selectfont{
+					\rowcolors{1}{}{red!10}
+					\begin{tabular}{|cccccc|}
+						\hline
+						Min & 1er Qu & Mediana  &  Media  & 3er Qu &   Max\\
+						-1.5226 & -0.3032 & 0.1387 & 0.0000 & 0.4419 & 1.2452 \\
+						\hline
+						
+			\end{tabular} }}
+			\caption{Residuos}
+		\end{table}
+	
+		Se comprueba con el Cuadro 2 que el valor esperado del error aleatorio es cero, además en la figura 2 donde en el eje $x$ se encuentran los valores ajustados y en el eje de las ordenadas sus respectivos errores, se muestra que estos últimos están cercanos a cero.
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/residuos1.png}
+			\caption{\small{Gáfico de residuos vs datos }}
+		\end{figure}
+		
+	}
+	
+	\item 
+	{
+		{\bf  Homocedasticidad.}
+		
+			Para analizar este supuesto se aplicó la prueba Breusch-Pagan obteniendo como resultado:
+		
+		\begin{center}
+			$BP = 2.7038$
+			
+			$p-valor = 0.1001$
+			
+			$\alpha = 0.05$
+		\end{center}
+		
+		
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar $H_0$ por lo que se puede decir que se cumple la Homocedasticidad.
+	
+	}
+	
+	\item 
+	{
+		{\bf  Los errores además de ser independientes son idénticamente distribuidos y siguen distribución normal con media cero y varianza constante.}
+		
+		Para analizar este supuesto primeramente se recurrió al test de contraste de normalidad Shapiro-Wilk dando como resultado:
+		\begin{center}
+		$W = 0.93698$ \\
+		$p-valor = 0.636$\\
+		$\alpha = 0.05$
+		\end{center}
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar la hipótesis nula por tanto los errores siguen una distribución normal.
+		
+		También se analizó el histograma de frecuencias y los cuantiles normales, ver figuras 3 y 4
+		
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/hist1.png}
+			\caption{\small{Histograma de los residuos }}
+		\end{figure}
+		
+		\newpage
+	
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=4in]{./image/qqplot1.png}
+			\caption{\small{QQ-plot de los residuos }}
+		\end{figure}
+	
+		A pesar de ser pocas observaciones, tanto la representación gráfica como el contraste de hipótesis confirman la distribución normal de los residuos con $\mu = 0 $ y varianza constante.
+	}
+
+\end{itemize}
+
+
+\section {Ejercicio 2}
+Ajuste los siguientes datos a una recta por mínimos cuadrados:
+
+\begin{table}[!h]
+	\centering
+	\scalebox{0.8}
+	{\fontfamily{ptm}\selectfont{
+			\rowcolors{1}{}{red!10}
+			\begin{tabular}{|c|c|c|c|c|c|c|}
+				\hline
+				$x$    & -3 & -1 & 1 & 3 & 5 & 7 \\
+				\hline
+				$f(x)$ & 14 & 4 & 2 & 8 & 22 & 44\\
+				
+				\hline
+	\end{tabular}}}
+	\caption{Datos iniciales}
+\end{table}
+
+	{\bf Test de correlación de Pearson: }
+
+$r = 0.7164552 $
+
+intervalo de confianza($95\%$) \quad $[ -0.2272261, \quad  0.9662140 ]$
+
+$p-valor :0.1092$
+\\
+
+	{\bf Ecuación del modelo:  }$y =    9.667  x + 3$
+\\
+
+{\bf Estimación}
+
+\begin{table}[!h]
+	\centering
+	\scalebox{0.8}
+	{\fontfamily{ptm}\selectfont{
+			\rowcolors{1}{}{red!10}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$x $    & $f(x)$ & intervalo de confianza  \\
+				\hline
+				0 & 9.666667 & $[-6.384505, \quad 25.71784]$\\
+				\hline
+				2 & 15.666667 & $[1.815325, \quad 29.51801]$\\
+				\hline
+	\end{tabular}}}
+	\caption{Valores estimados}
+\end{table}
+
+
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=4in]{./image/dispersion2.png}
+	\caption{\small{Diagrama de dispersión }}
+\end{figure}
+
+
+
+\subsection{Diagnóstico del modelo}
+
+\begin{itemize}
+	\item  
+	{
+		{\bf  Linealidad de los errores .}
+			Para analizar este supuesto se aplicó la prueba  Durbin-Watson obteniendo como resultado:
+		
+		\begin{center}
+			$DW = 1.0714$
+			
+			$p-valor = 0.003544$
+			
+			$\alpha = 0.05$
+		\end{center}
+		
+		Interpretación: Como $p-valor < \alpha$   se rechaza $H_0$ por lo que se puede decir que los errores están correlacionados, no son independientes.
+		
+	}
+	
+	\item 
+	{
+		{\bf Valor esperado del error aleatorio  igual a cero.}
+		
+			\begin{table}[h]
+			\centering
+			\scalebox{0.8}
+			{\fontfamily{ptm}\selectfont{
+					\rowcolors{1}{}{red!10}
+					\begin{tabular}{|cccccc|}
+						\hline
+						Min & 1er Qu & Mediana  &  Media  & 3er Qu &   Max\\
+						-10.667&  -8.667 & -2.667 &  0.000 &  9.333 & 13.333 \\
+						\hline
+						
+			\end{tabular} }}
+			\caption{Residuos}
+		\end{table}
+	
+		Se comprueba en el Cuadro 5 que el valor esperado del error aleatorio es cero. Mientras que en la figura 6 a continuación, se observa que algunos de los residuos  están distribuidos más alejados de cero que otros, llegando a alcanzar 10 unidades.
+		
+		\newpage
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/residuos2.png}
+			\caption{\small{Gáfico de residuos vs valores ajustados }}
+		\end{figure}
+	
+		
+	}
+	
+	\item 
+	{
+		{\bf  Homocedasticidad.}
+			Para analizar este supuesto se aplicó la prueba Breusch-Pagan obteniendo como resultado:
+		
+			\begin{center}
+			$BP = 4.8137e-31$
+			
+			$p-valor = 1$
+			
+			$\alpha = 0.05$
+			\end{center}
+			
+		
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar $H_0$ por lo que se puede decir que se cumple la Homocedasticidad.
+		
+		
+	}
+	
+	\item 
+	{
+		{\bf  Los errores además de ser independientes son idénticamente distribuidos y siguen distribución normal con media cero y varianza constante.}
+		
+			Para analizar este supuesto primeramente se recurrió al test de contraste de normalidad Shapiro-Wilk dando como resultado:
+		\begin{center}
+			$W =  0.82272$ \\
+			$p-valor = 0.09315$\\
+			$\alpha = 0.05$
+		\end{center}
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar la hipótesis nula por tanto los errores siguen una distribución normal.
+		
+		
+			En este caso el histograma de frecuencias no muestra ser una distribución normal, no obstante la prueba de hipótesis realizada y la figura 8 sí lo confirman.		
+		
+		\newpage
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/hist2.png}
+			\caption{\small{Histograma de los residuos }}
+		\end{figure}
+		
+		
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=4in]{./image/qqplot2.png}
+			\caption{\small{QQ-plot de los residuos }}
+		\end{figure}
+		
+	
+		
+	}
+
+Dado que el modelo no cumple con la linealidad del error aleatorio se concluye que no es un modelo bueno para realizar predicciones al no cumplir con uno de los supuestos, además el coeficiente de Pearson $r = 0.7164552 $ indica no ser tan fuerte la relación lineal.
+	
+\end{itemize}
+
+\newpage
+\section {Ejercicio 3}
+Se tiene un muelle sometido a tracción, se ha cargado el muelle con diferentes pesos y se han anotado los alargamientos:
+
+\begin{table}[h]
+	\centering
+	\scalebox{0.8}
+	{\fontfamily{ptm}\selectfont{
+			\rowcolors{1}{}{red!10}
+			\begin{tabular}{|cc|}
+				\hline
+				$Cargas Sucesivas(gramos)$ & $Alargamientos$\\
+				\hline
+				200  & 60 \\
+				400  & 120 \\
+				500  &  150   \\
+				700  &  210   \\
+				900  &  260   \\
+   				1000 & 290   \\
+				\hline
+	\end{tabular} }}
+\caption{Datos iniciales}
+\end{table}
+
+
+
+{\bf Test de correlación de Pearson: }
+
+$r = 0.9994979$
+
+intervalo de confianza($95\%$)  $[0.9951835, \quad  0.9999478 ]$
+
+$p-valor = 3.781e-07$\\
+
+
+{\bf Ecuación del modelo:  }$y =   5.44484  x + 0.28576$\\
+
+
+{\bf Estimación}
+
+\begin{table}[!h]
+	\centering
+	\scalebox{0.8}
+	{\fontfamily{ptm}\selectfont{
+			\rowcolors{1}{}{red!10}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$x $    & $f(x)$ & intervalo de confianza  \\
+				\hline
+				0 & 5.44484 & $[-3.069108, \quad 13.95879]$\\
+				\hline
+				2 & 6.01637 & $[-2.474674, \quad 14.50741]$\\
+				\hline
+	\end{tabular}}}
+	\caption{Valores estimados}
+\end{table}
+
+
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=4in]{./image/dispersion3.png}
+	\caption{\small{Diagrama de dispersión }}
+\end{figure}
+
+La figura 9 y el test de correlación muestran una relación lineal de intensidad considerable( $r =  0.9994979$) y significancia($p-valor = 3.781e-07$).\\
+
+
+
+\subsection{Diagnóstico del modelo}
+
+
+\begin{itemize}
+	\item  
+	{
+		{\bf  Linealidad de los errores .}
+			Para analizar este supuesto se aplicó la prueba  Durbin-Watson obteniendo como resultado:
+		
+		\begin{center}
+			$DW = 1.8585$
+			
+			$p-valor = 0.1827$
+			
+			$\alpha = 0.05$
+		\end{center}
+		
+		Interpretación: Como $p-valor > \alpha$  no se puede rechazar $H_0$ por lo que se puede decir que los errores son independientes.
+		
+		
+	}
+	
+	\item 
+	{
+		{\bf  Valor esperado del error aleatorio  igual a cero.}
+		
+		\begin{table}[!h]
+			\centering
+			\scalebox{0.8}
+			{\fontfamily{ptm}\selectfont{
+					\rowcolors{1}{}{red!10}
+					\begin{tabular}{|cccccc|}
+						\hline
+						Min & 1er Qu & Mediana  &  Media  & 3er Qu &   Max\\
+					-2.6335 & -2.2509 & -0.4804 & 0.0000 & 1.3167 & 4.5196 \\
+						\hline
+						
+			\end{tabular} }}
+			\caption{Residuos}
+		\end{table}
+		
+		Se comprueba con el Cuadro 8 que el valor esperado del error aleatorio es cero, mientras que en la figura 10 se observa que los residuos estn cercanos a cero en comparación con los valores ajustados que son grandes.
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/residuos3.png}
+			\caption{\small{Gáfico de residuos vs datos }}
+		\end{figure}
+		
+	}
+	
+	\item 
+	{
+		{\bf  Homocedasticidad.}
+		Para analizar este supuesto se aplicó la prueba Breusch-Pagan obteniendo como resultado:
+		
+		\begin{center}
+		$BP = 0.054052$
+		
+		$p-valor = 0.8162$
+		
+		$\alpha = 0.05$
+		\end{center}
+	
+		
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar $H_0$ por lo que se puede decir que se cumple la Homocedasticidad.
+	}
+	
+	\item 
+	{
+		{\bf  Los errores además de ser independientes son idénticamente distribuidos y siguen distribución normal con media cero y varianza constante.}
+		
+		Para analizar este supuesto primeramente se recurrió al test de contraste de normalidad Shapiro-Wilk dando como resultado:
+		\begin{center}
+			$W =0.91393$ \\
+			$p-valor =  0.4627$\\
+			$\alpha = 0.05$
+		
+		\end{center}
+		Interpretación: Como $p-valor > \alpha$ no se puede rechazar la hipótesis nula por tanto los errores siguen una distribución normal.
+		
+		También se analizó el histograma de frecuencias y los cuantiles normales, ver figuras 11 y 12.
+		
+		
+		\begin{figure}[!h]
+			\centering
+			\includegraphics[width=4in]{./image/hist3.png}
+			\caption{\small{Histograma de los residuos }}
+		\end{figure}
+		
+		
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=4in]{./image/qqplot3.png}
+			\caption{\small{QQ-plot de los residuos }}
+		\end{figure}
+		
+		\newpage
+		
+		A pesar de ser pocas observaciones, tanto la representación gráfica como el contraste de hipótesis confirman la distribución normal de los residuos con $\mu = 0 $ y varianza constante.
+	}
+	
+\end{itemize}
+
+
+
+
+
+\end{document}
