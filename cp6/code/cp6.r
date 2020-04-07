@@ -1,5 +1,5 @@
 
-#library(lmtest)
+library(lmtest)
 
 solveRegresion <- function(x, y, titlex, titley, v, xl, yl)
 {
@@ -17,42 +17,42 @@ solveRegresion <- function(x, y, titlex, titley, v, xl, yl)
   print(predict(object = modelo_lineal, newdata = data.frame(x = v), interval = "confidence", level = 0.95))
 
   residuos = modelo_lineal$residuals
-  prediccion = modelo_lineal$fitted.values
+  valores_ajustados= modelo_lineal$fitted.values
   
   #Analisis de los supuestos del modelo lineal
   
   #1- Independencia de los residuos
-    #print(dwtest(modelo_lineal))   #test Durbin-Watson
+  print(dwtest(modelo_lineal))   #test Durbin-Watson
  
   #2-E[residuos] = 0
-    print(summary(residuos))
-    plot(prediccion, residuos)
+  print(summary(residuos))
+  plot(valores_ajustados, residuos, xlab = "valores ajustados")
   
   #3- Varianza constante de los residuos(Homocedasticidad)
-    #print(bptest(modelo_lineal))
+  print(bptest(modelo_lineal))
     
   #4- Distribucion Normal con media 0 y varianza constante
-    hist(residuos, main = "Histograma")
+  hist(residuos, main = "Histograma", ylab = "Frecuencias")
     
-    qqnorm(residuos)
-    qqline(residuos)
+  qqnorm(residuos)
+  qqline(residuos)
     
-    shapiro.test(residuos)
+  shapiro.test(residuos)
 }
 
 #############
 #Ejercicio 1#
-#############
+############# 
 x1 = c(-1, 0, 3, 7)
 fx1 = c(2, 0, 4, 7)
-#solveRegresion(x1, fx1, "x", "f(x)", c(1), c(-2, 7), c(0, 7) )
+solveRegresion(x1, fx1, "x", "f(x)", c(1), c(-2, 7), c(0, 7) )
   
 #############
 #Ejercicio 2#
 #############
 x2 = c(-3, -1, 1, 3, 5, 7)
 fx2 = c(14, 4, 2, 8, 22, 44)
-#solveRegresion(x2, fx2, "x", "f(x)", c(0, 2), c(-4, 8), c(0,44))
+solveRegresion(x2, fx2, "x", "f(x)", c(0, 2), c(-4, 8), c(0,44))
 
 #############
 #Ejercicio 3#
