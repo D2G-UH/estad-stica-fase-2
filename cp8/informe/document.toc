@@ -1,0 +1,4 @@
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\contentsline {section}{\numberline {1}Ejercicio 5}{3}
+\contentsline {section}{\numberline {2}Soluci\'on}{3}

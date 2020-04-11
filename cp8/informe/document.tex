@@ -1,0 +1,353 @@
+\documentclass[12pt]{article}
+
+%Packages
+\usepackage[latin1]{inputenc}
+% Esto es para que el LaTeX sepa que el texto estÃ¡ en espaÃ±ol:
+\usepackage[spanish]{babel}
+\usepackage[x11names,table]{xcolor}
+
+% Paquetes de la AMS:
+%\usepackage[total={6in,11in},top=0.50in, left=1in]{geometry}
+\usepackage[top=1in, left=1in, right=1in, bottom=1in]{geometry}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphics}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amssymb}
+%\usepackage{dsfont}
+%\usepackage{latexsym}
+%\usepackage{newlfont}
+%\usepackage{epstopdf}
+%\usepackage{amsthm}
+%\usepackage{epsfig}
+%\usepackage{caption}
+%\usepackage{multirow}
+%\usepackage[colorlinks]{hyperref}
+%\usepackage[x11names,table]{xcolor}
+%\usepackage{graphics}
+%\usepackage{wrapfig}
+%\usepackage[rflt]{floatflt}
+%\usepackage{multicol}
+%\usepackage{listings}
+%\usepackage{array}
+
+\lstset{ %
+	language=R, % lenguaje
+	basicstyle=\normalsize\ttfamily,
+	keywordstyle=\color{blue},
+	commentstyle=\color{blue!50},
+	backgroundcolor=\color{gray!9},
+	identifierstyle = \color{gray!161},
+	stringstyle = \color{yellow},
+	numberstyle = \color{green},
+	columns=fullflexible,
+	showspaces=false
+}
+
+
+
+\newtheorem{thm}{Teorema}[section]
+\newtheorem{cor}[thm]{Corolario}
+\newtheorem{lem}[thm]{Lema}
+\newtheorem{prop}[thm]{ProposiciÃ³n}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definicion}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{ObservaciÃ³n}
+
+\def\RR{\mathbb{R}}
+
+\renewcommand{\labelenumi}{$\bullet$}
+\newtheorem{definition}{Definición}[section]
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{corollary}{Corolario}[section]
+\newtheorem{lemma}{Lema}[section]
+\newtheorem{proposition}{Proposición}[section]
+\newcommand{\statement}[3]{
+	\begin{center}
+		{ \fcolorbox {gray!11}{gray!11}{
+				\begin{minipage}[h!]{\textwidth}
+					\begin{#1}\label{#3}
+						#2
+					\end{#1}
+				\end{minipage} } }
+			\end{center}}
+			\renewcommand{\proof}[1]{{\it Demostración}\\ #1 \hfill\blacksquare}
+\newcommand{\pagediv}[4]
+{
+	\begin{figure}[!h]
+		\begin{minipage}[b]{#1\textwidth}
+			#3			
+		\end{minipage} \hfill 
+		\begin{minipage}[b]{#2\textwidth}
+			#4
+		\end{minipage}
+	\end{figure}
+	
+}
+
+
+
+%define title
+\author{
+	Equipo 1\\
+	Dalianys P\'erez Perera\\
+	Dayany Alfaro González\\
+	Gilberto González Rodríguez\\
+	Grupo C-411 \\
+}
+\title{Clase Práctica 8   \\
+	ANOVA
+	}
+
+\date{}
+\begin{document}
+%generates the title
+\maketitle
+
+\selectlanguage{spanish}
+
+\newpage
+
+\section {Ejercicio 5}
+Un aspecto crítico para que se conserve la leche es la temperatura de almacenamiento. De manera
+tradicional se han usado termómetros de mercurio (Mer) para verificar que la temperatura sea la
+adecuada, pero ahora se han comprado termómetros electrónicos (Rtd) para facilitar el proceso de
+medición. Sin embargo, se duda de las mediciones de estos nuevos dispositivos. Para aclarar dudas y
+diagnosticar la situación, durante cinco días se toman mediciones con ambos tipos de termómetros
+en varios silos (a la misma hora). Los datos para cinco silos se muestran a continuación:
+	\begin{figure}[!h]
+	\centering
+	\includegraphics[width=5in]{./image/table.png}
+\end{figure}
+\begin{itemize}
+	\item[a)] Es claro que el silo se puede ver como tratamiento y día como bloque. Considere sólo los datos
+	de Rtd y establezca el modelo estadístico. También haga el ANOVA correspondiente y obtenga
+	conclusiones.
+	\item[b)] Repita el inciso anterior pero ahora para las mediciones Mer.
+	\item[c)] ¿Las conclusiones obtenidas en los incisos anteriores coinciden? Comente su respuesta.
+	\item[d)] Datos pareados. Para comparar los dos métodos de medición (Mer y Rtd) obtenga como variable
+	de respuesta a la diferencia de temperatura que registran los métodos para cada día en cada silo.
+	Considerando esto, establezca el modelo estadístico, haga el ANOVA correspondiente y obtenga
+	conclusiones.
+\end{itemize}
+
+
+\section{Soluci\'on}
+Para proceder a la solución del ejercicio primero es necesario reestructurar los datos de forma que sea posible trabajar con ellos. Por tanto se guardan los datos en el archivo $\mathtt{temperature.csv}$ con el siguiente formato:\\
+
+	\begin{table}[h]
+	\centering			
+	\begin{tabular}{cccc}
+		\hline
+		\hline
+		 Silo & D\'ia & Mer & Rtd \\
+		\hline
+		\hline
+		A &  D1 & 4&2.6\\
+		\hline
+		A &  D2 & 4&2.8\\
+		\hline
+		... & ... & ...&...\\
+		\hline
+		E & D5 & 4&-6.3\\
+		\hline
+	\end{tabular}
+\end{table}
+
+De esta forma queda en la primera columna cada tipo de silo desde el A hasta el D repetidos 5 veces seguidas cada uno, en la segunda columna se va a encontrar la secuencia D1,D2,D3,D4,D5 repetida 5 veces, cada una asociada a un silo y en las dos últimas columnas van a estar ubicadas las respectivas mediciones de temperatura según el tipo de termómetro.
+\begin{itemize}
+\item[a)] El modelo estad\'istico a utilizar va a ser un modelo de bloques donde vamos a tener como factor de interés al silo mientras que el d\'ia va a ser el factor de bloque y la variable de respuesta va ser la temperatura de almacenamiento de la leche medida usando un termómetro de electrónico(Rtd). Como vamos a utilizar un diseño en bloques completos al azar(DBCA) el modelo quedaría de la siguiente forma:
+$$Y_{ij}= \mu + \alpha_{i} + \beta_j + e_{ij}$$
+Donde $Y_{ij}$ es la medición de temperatura, con un term\'ometro electrónico, que corresponde al silo $i$ y al d\'ia $j$, $\mu$ es la media global poblacional; $\alpha_{i}$ es el efecto debido al silo $i$, $\beta_j$ es el efecto debido al d\'ia
+$j$ y $e_{ij}$ es el error aleatorio atribuible a la medición $Y_{ij}$. Adem\'as se tiene que $\mu_i = \mu + \alpha_{i}$ es la media de temperatura para el silo $i$.Se supone que los errores distribuyen de manera
+normal con media cero y varianza constante $\sigma^2$ , y que son independientes entre sí. Las hipótesis a probar
+en este caso ser\'ian:
+\begin{center}
+$H_0: \mu_1 = \mu_2 = \mu_3 = \mu_4 = \mu_5 = \mu$\\
+$H_1: \mu_i \neq \mu_j$ para algún $i\neq j $
+\end{center}
+
+La cual se puede reescribir de forma equivalente como:
+\begin{center}
+$H_0: \alpha_1 = \alpha_2 = \alpha_3 = \alpha_4 = \alpha_5 = 0$\\
+$H_1: \alpha_i \neq 0$ para algún $i$
+\end{center}
+Al hacer el ANOVA correspondiente también se obtienen resultados para el efecto de los bloques, donde se verifica la hipótesis:
+\begin{center}
+$H_0: \beta_1 = \beta_2 = \beta_3 = \beta_4 = \beta_5 = 0$\\
+$H_1: \beta_i \neq 0$ para algún $i$
+\end{center}
+{\bf ANOVA:  }
+	\begin{figure}[!h]
+	\centering
+	\includegraphics[width=5in]{./image/rtd_anova.png}
+	\caption{Resultados del ANOVA para el modelo del inciso a)}
+\end{figure}
+
+Como el p-valor es menor que la significación prefijada $\alpha = 0.05$ se rechaza $H_0$ para el silo y se acepta que al menos un
+par de silos tienen medias diferentes, mientras que para los d\'ias ocurre que el p-valor es mayor que $\alpha$ y por tanto no se puede rechazar $H_0$ pero se puede decir que se acepta y por tanto todos los d\'ias tendr\'ian un efecto igual a cero.
+
+Por último, necesitamos verificar los supuestos del modelo.Se utiliza la
+muestra de residuos para comprobar los supuestos del modelo, ya que si los supuestos se cumplen, los
+residuos se pueden ver como una muestra aleatoria de una distribución normal con media
+cero y varianza constante.
+\newpage
+{\bf Verificaci\'on de los supuestos:  }
+\begin{itemize}
+	\item[1.] Los $e_{ij}$ siguen una distribución normal con media cero.\\
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/rtd_qqplot.png}
+		\caption{Q-Q Plot de los residuos del ANOVA del inciso a) }
+	\end{figure}
+
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=3in]{./image/rtd_shtest.png}
+		\caption{Prueba de normalidad los residuos del ANOVA del inciso a) }
+	\end{figure}
+
+	Según se puede observar en en el gr\'afico de la figura 2 y como se aprecia en la figura 3 la prueba de Shapiro-Wilcox no es significativa por tanto no
+	podemos rechazar $H_0$ y se cumple la hipótesis de normalidad en los residuos.
+		
+	\item[2.] Los $e_{ij}$ son independientes entre sí.\\
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=5in]{./image/rtd_dwtest.png}
+		\caption{Prueba de independencia los errores del ANOVA del inciso a) }
+	\end{figure}
+
+	Como se observa en la figura 4 en la prueba de  Durbin-Watson el p-valor es menor que 0.05 por lo que se rechaza $H_0$ y se tiene que los residuos no son independientes.\\
+	
+	\item[3.]  Los residuos de cada tratamiento tienen la misma varianza $\sigma^2$ .\\\\
+	No es necesario analizarlo ya que al no cumplirse el supuesto 2  deja de tener validez el experimento.
+	
+	
+\end{itemize}
+
+
+\item[b)] En este caso se usa el mismo modelo estadístico descrito en el inciso anterior, solo que ahora  $Y_{ij}$ es la medición de temperatura de almacenamiento de la leche con un term\'ometro de mercurio.\\\\
+{\bf ANOVA:  }
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=4in]{./image/mer_anova.png}
+	\caption{Resultados del ANOVA para el modelo del inciso b)}
+\end{figure}
+
+Como el p-valor es mayor que la significación prefijada $\alpha = 0.05$, en ambos casos, no se puede rechazar $H_0$ y no hay evidencias suficientes para considerar que al menos dos medias de los silos son distintas. Sin embargo con respecto al efecto de los d\'ias se puede considerar que se acepta $H_0$ y su  influencia en la respuesta no
+es significativa.\\
+
+{\bf Verificaci\'on de los supuestos:  }
+\begin{itemize}
+	\item[1.] Los $e_{ij}$ siguen una distribución normal con media cero.\\
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/mer_qqplot.png}
+		\caption{Q-Q Plot de los residuos del ANOVA del inciso b) }
+	\end{figure}
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=3in]{./image/mer_shtest.png}
+		\caption{Prueba de normalidad los residuos del ANOVA del inciso b) }
+	\end{figure}
+	
+	Según se puede observar en en el gr\'afico de la figura 6 y como se aprecia en la figura 7 la prueba de Shapiro-Wilcox no es significativa por tanto no
+	podemos rechazar $H_0$ y se cumple la hipótesis de normalidad en los residuos.
+	
+	\item[2.] Los $e_{ij}$ son independientes entre sí.\\
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=5in]{./image/mer_dwtest.png}
+		\caption{Prueba de independencia los errores del ANOVA del inciso b) }
+	\end{figure}
+	
+	Como se observa en la figura 8 en la prueba de  Durbin-Watson  el p-valor es mayor que 0.05 por lo que no se rechaza $H_0$ y se tiene que los residuos son independientes.\\
+	
+	\item[3.]  Los residuos de cada tratamiento tienen la misma varianza $\sigma^2$ .\\
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/mer_varplot.png}
+		\caption{Studentized residuals del ANOVA del inciso b) }
+	\end{figure}
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/mer_btest.png}
+		\caption{Prueba de varianza constante los residuos del ANOVA del inciso b) }
+	\end{figure}
+
+Según se puede observar en en el gr\'afico de la figura 9 y como se aprecia en la figura 10 la prueba de Barlett no es significativa por tanto no
+podemos rechazar $H_0$ y se cumple la hipótesis de varianza constante.
+	
+	
+\end{itemize}
+
+\item[c)] Dado que los resultados del experimento del inciso a) fueron inv\'alidos debido a que no se cumplen todos los supuestos es imposible compararlos con los resultados obtenidos en el experimento del inciso b).
+
+\item[d)] En este caso tambi\'en vamos a estar utilizando el mismo modelo que en el inciso a) solo que ahora $Y_{ij}$ va a ser el valor absoluto de la diferencia entre las mediciones realizadas con term\'ometros de mercurio(Mer) y las realizadas con term\'metros electr\'onicos(Rtd).\\
+
+{\bf ANOVA:  }\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5in]{./image/dif_anova.png}
+	\caption{Resultados del ANOVA para el modelo del inciso d)}
+\end{figure}
+
+Para este caso se tiene que el p-valor es menor que la significación prefijada $\alpha = 0.05$ por lo que se rechaza $H_0$ para el silo y se acepta que al menos un
+par de silos tienen medias diferentes, mientras que para los d\'ias ocurre que el p-valor es mayor que $\alpha$ y se puede decir que se acepta $H_0$ y los d\'ias no van a tener un efecto significativo.\\
+
+\newpage
+{\bf Verificaci\'on de los supuestos:  }
+\begin{itemize}
+	\item[1.] Los $e_{ij}$ siguen una distribución normal con media cero.\\
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=4in]{./image/dif_qqplot.png}
+		\caption{Q-Q Plot de los residuos del ANOVA del inciso d) }
+	\end{figure}
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=3in]{./image/dif_shtest.png}
+		\caption{Prueba de normalidad los residuos del ANOVA del inciso d) }
+	\end{figure}
+	
+	Según se puede observar en el gr\'afico de la figura 12 y como se aprecia en la figura 13 la prueba de Shapiro-Wilcox no es significativa por tanto no
+	podemos rechazar $H_0$ y se cumple la hipótesis de normalidad en los residuos.
+	
+	\item[2.] Los $e_{ij}$ son independientes entre sí.\\
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=5in]{./image/dif_dwtest.png}
+		\caption{Prueba de independencia los errores del ANOVA del inciso d) }
+	\end{figure}
+	
+	Como se observa en la figura 14 en la prueba de  Durbin-Watson el p-valor es menor que 0.05 por lo que se rechaza $H_0$ y se tiene que los residuos no son independientes.\\
+	
+	\item[3.]  Los residuos de cada tratamiento tienen la misma varianza $\sigma^2$ .\\\\
+	No es necesario analizarlo ya que al no cumplirse el supuesto 2  deja de tener validez el experimento.
+	
+\end{itemize}
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
